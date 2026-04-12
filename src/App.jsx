@@ -12,10 +12,17 @@ function App() {
   const onChangeHour = (e) => {
     setStudyContent({...studyContent, hour:Number(e.target.value)});
   }
+
+  const handleInput = async(formData) => {
+    const content = await formData.get('study-content');
+    const hour = await formData.get('study-hour');
+    console.log(content);
+    console.log(hour);
+  }
   return (
       <div className="container mt-5">
           <h1 className="fs-2 text-center">学習記録登録アプリ</h1>
-          <form action="" method="post">
+          <form action={handleInput}>
               <div className="mb-3">
                   <InputTextarea
                       label="学習内容"
@@ -29,7 +36,7 @@ function App() {
                   <InputHour
                       label="学習内容"
                       type="number"
-                      name="study-content"
+                      name="study-hour"
                       value={studyContent.hour}
                       placeholder="0"
                       onChange={onChangeHour}
