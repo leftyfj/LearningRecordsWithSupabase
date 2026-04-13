@@ -1,8 +1,10 @@
 
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import { InputTextarea } from "./components/InputTextarea";
 import { InputHour } from "./components/InputHour";
+import { saveLearningRecord } from "./services/saveLearningRecord";
 import './App.css'
+import { fetchLearningRecords } from "./services/fetchLearningRecords";
 
 function App() {
   const [studyContent, setStudyContent] = useState({title:"", hour:""})
@@ -13,16 +15,44 @@ function App() {
     setStudyContent({...studyContent, hour:Number(e.target.value)});
   }
 
-  const handleInput = async(formData) => {
+  const handleRegister = async(formData) => {
     const content = await formData.get('study-content');
     const hour = await formData.get('study-hour');
-    console.log(content);
-    console.log(hour);
+
+    try {
+        await saveLearningRecord(content, hour);
+        alert("学習記録を保存しました!");
+        setStudyContent({title:"", hour:""});
+        //保存後にデータを再取得して一覧を更新する
+        await loadData();
+    } catch(error) {
+        alert('保存に失敗しました: ' + error.message);
+    }
+
   }
+
+  //データ取得に関する処理
+  const [records, setRecords] = useState([]);
+
+  const loadData = async() => {
+    try {
+        const data = await fetchLearningRecords();
+        setRecords(data);
+    } catch(e) {
+        console.error(e);
+    }
+  };
+
+  //画面が表示されたときに一度だけ実行
+  useEffect(() => {
+    loadData();
+  },[]);
+
+  const totalHours = records.reduce((sum, record) => sum + Number(record.hour),0);
   return (
       <div className="container mt-5">
           <h1 className="fs-2 text-center">学習記録登録アプリ</h1>
-          <form action={handleInput}>
+          <form action={handleRegister}>
               <div className="mb-3">
                   <InputTextarea
                       label="学習内容"
@@ -84,28 +114,23 @@ function App() {
                       </tr>
                   </thead>
                   <tbody>
-                      <tr className="align-middle">
-                          <th scope="row">1</th>
-                          <td>2026-4-1</td>
-                          <td>React基礎</td>
-                          <td className="text-end">1.0</td>
-                          <td className="text-center">
+                    {records.map((record, index) => (
+                        <tr key={record.id} className="align-middle">
+                            <th scope="row">{index + 1}</th>
+                            <td>{new Date(record.createdAt).toLocaleDateString()}</td>
+                            <td>{record.content}</td>
+                            <td className="text-end">{record.hour}</td>
+                             <td className="text-center">
                               <button className="btn btn-success">削除</button>
                           </td>
-                      </tr>
-                      <tr className="align-middle">
-                          <th scope="row">2</th>
-                          <td>2026-4-2</td>
-                          <td>CSSアニメーション</td>
-                          <td className="text-end">1.0</td>
-                          <td className="text-center">
-                              <button className="btn btn-success">削除</button>
-                          </td>
-                      </tr>
+                        </tr>
+
+                    ))};
+
                   </tbody>
               </table>
               <p className="mt-5 text-end fw-bold">
-                  <span>累計時間:</span>10.0時間
+                  <span>累計時間:</span>{totalHours}時間
               </p>
           </div>
       </div>
