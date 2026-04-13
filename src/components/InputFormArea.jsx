@@ -6,7 +6,7 @@ export const InputFormArea = (props) => {
         props;
     return (
         <form action={handleRegister}>
-            <div className="mb-3">
+            <div className="mb-3 fw-bold">
                 <InputTextarea
                     label="学習内容"
                     name="study-content"
@@ -15,7 +15,7 @@ export const InputFormArea = (props) => {
                     onChange={onChangeContent}
                 />
             </div>
-            <div className="mb-3">
+            <div className="mb-3 fw-bold">
                 <InputHour
                     label="学習内容"
                     type="number"

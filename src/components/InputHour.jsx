@@ -6,7 +6,7 @@ export const InputHour = (props) => {
              {label}
          </label>
          <input
-             className="form-control"
+             className="form-control w-25 w-md-100"
              id="study-time"
              type={type}
              name={name}
