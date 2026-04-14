@@ -1,6 +1,8 @@
 export const InputHour = (props) => {
  const { label, type, name, value, placeholder, onChange } = props;
- return (
+
+ const isInvalid = value < 0;
+    return(
      <>
          <label htmlFor="study-time" className="form-label">
              {label}
@@ -15,6 +17,11 @@ export const InputHour = (props) => {
              onChange={onChange}
              required
          />
+         {isInvalid && (
+         <div className="alert alert-danger mt-2" role="alert">
+             学習時間がマイナスになっています。
+         </div>
+         )}
      </>
- );
+ )
 }
