@@ -19,7 +19,7 @@ export const useLearningRecords = () => {
 
      try {
          await saveLearningRecord(content, hour);
-         alert("学習記録を保存しました!");
+         // alert("学習記録を保存しました!");
          setStudyContent({title:"", hour:""});
          //保存後にデータを再取得して一覧を更新する
          await loadData();
@@ -56,8 +56,8 @@ export const useLearningRecords = () => {
      loadData();
    },[]);
 
-   const totalHours = records.reduce((sum, record) => sum + Number(record.hour),0);
-
+  //  const totalHours = records.reduce((sum, record) => sum + Number(record.hour),0);
+    const totalHours = calculateTotalHours(records);
    return {
     studyContent,
     records,
@@ -68,3 +68,8 @@ export const useLearningRecords = () => {
     onClickDelete
    };
 };
+
+// 1. 関数の外（または別ファイル）に計算ロジックを移動
+export const calculateTotalHours = (records) => {
+  return records.reduce((sum, record) => sum + Number(record.hour),0);
+}
