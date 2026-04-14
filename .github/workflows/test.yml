@@ -1,0 +1,26 @@
+name: Run Vitest
+
+# GitHubにpushされた時と、プルリクエストが作られた時に実行する
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. GitHubのサーバーにあなたのコードをコピーする
+      - uses: actions/checkout@v4
+
+      # 2. Node.js（JavaScriptの実行環境）をセットアップする
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # 3. 必要なライブラリ（Vitestなど）をインストールする
+      - name: Install dependencies
+        run: npm install
+
+      # 4. テストを実行する
+      - name: Run tests
+        run: npm test -- --run
